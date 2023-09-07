@@ -39,21 +39,16 @@ const createRow = (obj, count) => {
   productTotalPrice.classList.add('table__cell');
   productTotalPrice.textContent = `$${obj.count * obj.price}`;
 
-  tableRow.insertAdjacentHTML('afterbegin', `
+  tableRow.append(tableCount, productName, productCategory, productUnit,
+    productQuantity, productPrice, productTotalPrice);
+
+  tableRow.insertAdjacentHTML('beforeend', `
     <td class="table__cell table__cell_btn-wrapper">
       <button class="table__btn table__btn_pic"></button>
       <button class="table__btn table__btn_edit"></button>
       <button class="table__btn table__btn_del"></button>
     </td>
   `);
-  tableRow.insertAdjacentElement('afterbegin', productTotalPrice);
-  tableRow.insertAdjacentElement('afterbegin', productPrice);
-  tableRow.insertAdjacentElement('afterbegin', productQuantity);
-  tableRow.insertAdjacentElement('afterbegin', productUnit);
-  tableRow.insertAdjacentElement('afterbegin', productCategory);
-  tableRow.insertAdjacentElement('afterbegin', productName);
-  tableRow.insertAdjacentElement('afterbegin', tableCount);
-
 
   return tableRow;
 }
@@ -84,7 +79,7 @@ const createRowV2 = (obj, count) => {
 
 const renderGoods = (arr, tableBody) => {
   for (let i = 0; i < arr.length; i++) {
-    tableBody.insertAdjacentElement('beforeend', createRowV2(arr[i], i + 1));
+    tableBody.insertAdjacentElement('beforeend', createRow(arr[i], i + 1));
   }
 }
 
