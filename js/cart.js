@@ -2,85 +2,125 @@
 
 import { goods } from "./goods.js";
 
+{
+  const setAttributes = (elem, obj) => {
+    const possibleAttr = ['className', 'textContent', 'id', 'href', 'target',
+      'name', 'for', 'value', 'type', 'min', 'max'];
+    const attrKeys = Object.keys(obj);
+
+    for (const key of attrKeys) {
+      if (possibleAttr.includes(key)) {
+        elem[key] = obj[key];
+      }
+
+      if (key === 'dataset') {
+        elem[key][obj[key][0]] = obj[key][1];
+      }
+
+      if (key === 'innerHTML') {
+        elem.innerHTML = obj[key];
+      }
+    }
+  };
+
+  const setRelatives = (elem, obj) => {
+    const relativesKeys = Object.keys(obj);
+
+    for (const key of relativesKeys) {
+      if (typeof obj[key] === 'function') {
+        obj[key](elem);
+      }
+
+      if (key === 'parrent') {
+        obj[key].append(elem);
+      }
+
+      if (key === 'appends') {
+        obj[key].forEach(item => elem.append(item));
+      }
+    }
+  }
+
+  const createElement = (selector, attributes, relatives) => {
+
+    const elem = document.createElement(selector);
+
+    if (attributes) {
+      setAttributes(elem, attributes);
+    }
+
+    if (relatives) {
+      setRelatives(elem, relatives);
+    }
+
+    return elem;
+  };
+
+  window.createElement = createElement;
+}
+
 const addProductModal = document.querySelector('.overlay');
 const cartTableBody = document.querySelector('.table__body');
 
 const createRow = (obj, count) => {
-  const tableRow = document.createElement('tr');
-  const tableCount = document.createElement('td');
-  const productName = document.createElement('td');
-  const productCategory = document.createElement('td');
-  const productUnit = document.createElement('td');
-  const productQuantity = document.createElement('td');
-  const productPrice = document.createElement('td');
-  const productTotalPrice = document.createElement('td');
 
-  tableCount.classList.add('table__cell');
-  tableCount.textContent = count;
-
-  productName.classList.add('table__cell', 'table__cell_left', 'table__cell_name');
-  productName.dataset.id = obj.id;
-  productName.insertAdjacentHTML(
-    'afterbegin', `<span class="table__cell-id">id: ${obj.id}</span>${obj.title}`
-  );
-
-  productCategory.classList.add('table__cell', 'table__cell_left');
-  productCategory.textContent = obj.category;
-
-  productUnit.classList.add('table__cell');
-  productUnit.textContent = obj.units;
-
-  productQuantity.classList.add('table__cell');
-  productQuantity.textContent = obj.count;
-
-  productPrice.classList.add('table__cell');
-  productPrice.textContent = `$${obj.price}`;
-
-  productTotalPrice.classList.add('table__cell');
-  productTotalPrice.textContent = `$${obj.count * obj.price}`;
-
-  tableRow.append(tableCount, productName, productCategory, productUnit,
-    productQuantity, productPrice, productTotalPrice);
-
-  tableRow.insertAdjacentHTML('beforeend', `
-    <td class="table__cell table__cell_btn-wrapper">
-      <button class="table__btn table__btn_pic"></button>
-      <button class="table__btn table__btn_edit"></button>
-      <button class="table__btn table__btn_del"></button>
-    </td>
-  `);
-
-  return tableRow;
-}
-
-const createRowV2 = (obj, count) => {
-  const tableRow = document.createElement('tr');
-
-  tableRow.insertAdjacentHTML('beforeend', `
-  <td class="table__cell">${count}</td>
-  <td class="table__cell table__cell_left table__cell_name" data-id="${obj.id}">
-    <span class="table__cell-id">id: ${obj.id}</span>
-    ${obj.title}
-  </td>
-  <td class="table__cell table__cell_left">${obj.category}</td>
-  <td class="table__cell">${obj.units}</td>
-  <td class="table__cell">${obj.count}</td>
-  <td class="table__cell">$${obj.price}</td>
-  <td class="table__cell">$${obj.count * obj.price}</td>
-  <td class="table__cell table__cell_btn-wrapper">
-    <button class="table__btn table__btn_pic"></button>
-    <button class="table__btn table__btn_edit"></button>
-    <button class="table__btn table__btn_del"></button>
-  </td>
-  `);
+  const tableRow = createElement('tr', {}, {
+    appends: [
+      createElement('td', {
+        className: 'table__cell',
+        textContent: count,
+      }),
+      createElement('td', {
+        className: 'table__cell table__cell_left table__cell_name',
+        dataset: ['id', obj.id],
+        innerHTML: `<span class="table__cell-id">id: ${obj.id}</span>${obj.title}`,
+      }),
+      createElement('td', {
+        className: 'table__cell table__cell_left',
+        textContent: obj.category,
+      }),
+      createElement('td', {
+        classList: 'table__cell',
+        textContent: obj.units,
+      }),
+      createElement('td', {
+        className: 'table__cell',
+        textContent: obj.count,
+      }),
+      createElement('td', {
+        className: 'table__cell',
+        textContent: `$${obj.price}`,
+      }),
+      createElement('td', {
+        className: 'table__cell',
+        textContent: `$${obj.count * obj.price}`,
+      }),
+      createElement('td', {
+        className: 'table__cell table__cell_btn-wrapper',
+      },
+        {
+          appends: [
+            createElement('button', {
+              className: 'table__btn table__btn_pic',
+            }),
+            createElement('button', {
+              className: 'table__btn table__btn_edit',
+            }),
+            createElement('button', {
+              className: 'table__btn table__btn_del',
+            }),
+          ],
+        }),
+    ],
+  });
 
   return tableRow;
 }
 
 const renderGoods = (arr, tableBody) => {
-  for (let i = 0; i < arr.length; i++) {
-    tableBody.insertAdjacentElement('beforeend', createRow(arr[i], i + 1));
-  }
+  arr.forEach((item, index) => {
+    tableBody.insertAdjacentElement('beforeend', createRow(item, index + 1));
+  });
 }
 
 const clearTable = (tableBody) => {
