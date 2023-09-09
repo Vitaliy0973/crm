@@ -61,6 +61,7 @@ import { goods } from "./goods.js";
 
 const addProductModal = document.querySelector('.overlay');
 const cartTableBody = document.querySelector('.table__body');
+const addProductButton = document.querySelector('.panel__add-goods');
 
 const createRow = (obj, count) => {
 
@@ -129,7 +130,18 @@ const clearTable = (tableBody) => {
   }
 }
 
-addProductModal.remove('active');
+addProductModal.classList.remove('active');
+
+addProductButton.addEventListener('click', () => {
+  addProductModal.classList.add('active');
+});
+
+addProductModal.addEventListener('click', (e) => {
+  console.log(e.target);
+  if (e.target === addProductModal || e.target.closest('.modal__close')) {
+    addProductModal.classList.remove('active');
+  }
+});
 
 clearTable(cartTableBody);
 renderGoods(goods, cartTableBody);
