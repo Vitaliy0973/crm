@@ -64,7 +64,6 @@ const cartTableBody = document.querySelector('.table__body');
 const addProductButton = document.querySelector('.panel__add-goods');
 
 const createRow = (obj, count) => {
-
   const tableRow = createElement('tr', {}, {
     appends: [
       createElement('td', {
@@ -137,7 +136,6 @@ addProductButton.addEventListener('click', () => {
 });
 
 addProductModal.addEventListener('click', (e) => {
-  console.log(e.target);
   if (e.target === addProductModal || e.target.closest('.modal__close')) {
     addProductModal.classList.remove('active');
   }
@@ -145,3 +143,22 @@ addProductModal.addEventListener('click', (e) => {
 
 clearTable(cartTableBody);
 renderGoods(goods, cartTableBody);
+
+cartTableBody.addEventListener('click', (e) => {
+  const cartDelProduct = Array.from(document.querySelectorAll('.table__btn_del'));
+
+  if (cartDelProduct.includes(e.target)) {
+    const row = e.target.closest('tr');
+    const id = row.querySelector('.table__cell_name').dataset.id;
+    row.remove();
+
+    goods.forEach((item, index) => {
+      if (item.id === +id) {
+        goods.splice(index, 1);
+      }
+    })
+  }
+
+  console.log(goods);
+});
+
