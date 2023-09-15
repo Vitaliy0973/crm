@@ -67,7 +67,7 @@ const cartTotalPrice = document.querySelector('.cms__total-price');
 
 const createRow = (obj, count) => {
   const totalPrice = obj.count * obj.price - obj.count * obj.price *
-    obj.discount / 100 ?? obj.count * obj.price;
+    obj.discount / 100 || obj.count * obj.price;
 
   const tableRow = createElement('tr', {}, {
     appends: [
@@ -187,7 +187,7 @@ const addProductPage = (data, tableBody) => {
 const pageTotalPrice = () => {
   const totalPrice = goods.reduce((sum, item) => {
     return sum += item.price * item.count - item.price * item.count *
-      item.discount / 100 ?? item.price * item.count;
+      item.discount / 100 || item.price * item.count;
   }, 0);
 
   cartTotalPrice.textContent = `$ ${totalPrice}`;
