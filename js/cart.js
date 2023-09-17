@@ -193,6 +193,23 @@ const pageTotalPrice = () => {
   cartTotalPrice.textContent = `$ ${totalPrice}`;
 };
 
+const pageDelProduct = (target) => {
+  target.closest('tr').remove();
+
+  Array.from(cartTableBody.rows).forEach((item, index) => {
+    item.firstChild.textContent = index + 1;
+  });
+};
+
+const dataDelProduct = (target) => {
+  const id = target.closest('tr').querySelector('.table__cell_name').dataset.id;
+  const index = goods.findIndex(item => item.id === +id);
+
+  if (index !== -1) {
+    goods.splice(index, 1);
+  }
+};
+
 
 closeModal()
 clearTable(cartTableBody);
@@ -213,24 +230,9 @@ addProductModal.addEventListener('click', (e) => {
 });
 
 cartTableBody.addEventListener('click', (e) => {
-  const cartDelProduct = Array.from(cartTableBody.querySelectorAll('.table__btn_del'));
-
-  if (cartDelProduct.includes(e.target)) {
-    const row = e.target.closest('tr');
-    const id = row.querySelector('.table__cell_name').dataset.id;
-
-    row.remove();
-
-    Array.from(cartTableBody.rows).forEach((item, index) => {
-      item.firstChild.textContent = index + 1;
-    });
-
-    goods.forEach((item, index) => {
-      if (item.id === +id) {
-        goods.splice(index, 1);
-      }
-    });
-
+  if (e.target.closest('.table__btn_del')) {
+    pageDelProduct(e.target);
+    dataDelProduct(e.target);
     pageTotalPrice();
   }
 });
