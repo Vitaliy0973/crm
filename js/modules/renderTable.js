@@ -45,7 +45,7 @@ const createRow = (obj, count) => {
           appends: [
             createElement('button', {
               className: 'table__btn table__btn_pic',
-              dataset: ['pic', '/img/img.jpg'],
+              dataset: ['pic', `${location.origin}/img/img.jpg`],
             }),
             createElement('button', {
               className: 'table__btn table__btn_edit',
